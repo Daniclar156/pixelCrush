@@ -12,7 +12,7 @@ namespace Pixel_Crush
 
         public Random rand = new Random();
 
-        public Pixel (int _x, int _y)
+        public Pixel (int _x, int _y, int _r, int _g, int _b)
         {
             x = _x;
             y = _y;

@@ -15,44 +15,70 @@ namespace Pixel_Crush
         //variables
         int mouseX, mouseY, score;
 
-        //randomizer
-        Random randPos = new Random();
-
-        //brush
+        //graphics objects
         SolidBrush pixelBrush;
+        Pen selectionPen = new Pen(Color.Black);
 
         //box list
         public static List<Pixel> pixels = new List<Pixel>();
 
         //playing grid
-       // public static List<int> pGrid = new List<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
+        // public static List<int> pGrid = new List<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
 
         public GameScreen()
         {
             InitializeComponent();
-            OnStart();
+            StartGame();
         }
 
-        public void OnStart()
+        public void StartGame()
         {
             generateGrid();
-            //randomize grid 1 to amount desired cubes, then have a grid corisponding to a set about of spaces. check if match, then set x, y to that grid spot
-            //todo figure out how to randomly generate boxes in a grid with pixel spacing of 5
         }
-
+        /// <summary>
+        /// Randomize grid of 12 cubes with random colors
+        /// </summary>
         public void generateGrid()
         {
-            foreach (Pixel p in pixels)
-            {
-                int boxPos = 1;//randPos.Next(1, 13);
-                switch (boxPos)
-                {
-                    case 1:
-                        Pixel pp = new Pixel(100, 100);
-                        pixels.Add(pp);
-                        break;
-                }
-            }
+            //todo figure out color randomization
+
+            Pixel p = new Pixel(275, 50);
+            pixels.Add(p);
+
+            Pixel p1 = new Pixel(375, 50);
+            pixels.Add(p1);
+
+            Pixel p2 = new Pixel(475, 50);
+            pixels.Add(p2);
+
+            Pixel p3 = new Pixel(575, 50);
+            pixels.Add(p3);
+
+            Pixel p4 = new Pixel(275, 125);
+            pixels.Add(p4);
+
+            Pixel p5 = new Pixel(375, 125);
+            pixels.Add(p5);
+
+            Pixel p6 = new Pixel(475, 125);
+            pixels.Add(p6);
+
+            Pixel p7 = new Pixel(575, 125);
+            pixels.Add(p7);
+
+            Pixel p8 = new Pixel(275, 200);
+            pixels.Add(p8);
+
+            Pixel p9 = new Pixel(375, 200);
+            pixels.Add(p9);
+
+            Pixel p10 = new Pixel(475, 200);
+            pixels.Add(p10);
+
+            Pixel p11 = new Pixel(575, 200);    
+            pixels.Add(p11);
+
+            //todo switch to playmode for player
         }
 
 
@@ -73,7 +99,7 @@ namespace Pixel_Crush
                 pixelBrush = new SolidBrush(Color.FromArgb(p.r, p.g, p.b));
 
                 e.Graphics.FillRectangle(pixelBrush, p.x, p.y, 50, 50);
-            }   
+            }
         }
     }
 }
