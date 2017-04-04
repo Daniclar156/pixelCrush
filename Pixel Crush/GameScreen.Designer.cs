@@ -44,6 +44,7 @@
             this.Name = "GameScreen";
             this.Size = new System.Drawing.Size(900, 500);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameScreen_Paint);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GameScreen_MouseDown);
             this.ResumeLayout(false);
 
         }

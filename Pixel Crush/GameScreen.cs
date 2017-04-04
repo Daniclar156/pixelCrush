@@ -13,7 +13,7 @@ namespace Pixel_Crush
     public partial class GameScreen : UserControl
     {
         //variables
-        int mouseX, mouseY, score;
+        int score;
 
         //graphics objects
         SolidBrush pixelBrush;
@@ -24,6 +24,8 @@ namespace Pixel_Crush
 
         //playing grid
         // public static List<int> pGrid = new List<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
+        Random randGen = new Random();
+
 
         public GameScreen()
         {
@@ -78,9 +80,27 @@ namespace Pixel_Crush
             Pixel p11 = new Pixel(575, 200);    
             pixels.Add(p11);
 
-            //todo switch to playmode for player
+            foreach (Pixel pp in pixels)
+            {
+                int c = randGen.Next(1, 4);
+                pp.generateColor(c);
+            }
         }
 
+        private void GameScreen_MouseDown(object sender, MouseEventArgs e)
+        {
+            //player turn
+            foreach (Pixel p in pixels)
+            {
+                if (p.PixelClicked(p, MousePosition.X, MousePosition.Y))
+                {
+                    selectionPen.Width = 3;
+
+                    Graphics g = this.CreateGraphics();
+                    g.DrawRectangle(selectionPen, MousePosition.X - 5, MousePosition.Y - 5, 60, 60);
+                }
+            }
+        }
 
         //game loop
         private void gameLoop_Tick(object sender, EventArgs e)
@@ -92,10 +112,6 @@ namespace Pixel_Crush
         {
             foreach (Pixel p in pixels)
             {
-                p.r = p.rand.Next(1, 256);
-                p.g = p.rand.Next(1, 256);
-                p.b = p.rand.Next(1, 256);
-
                 pixelBrush = new SolidBrush(Color.FromArgb(p.r, p.g, p.b));
 
                 e.Graphics.FillRectangle(pixelBrush, p.x, p.y, 50, 50);
