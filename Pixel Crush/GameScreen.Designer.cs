@@ -28,19 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.gameLoop = new System.Windows.Forms.Timer(this.components);
+            this.checkSelected = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // gameLoop
+            // checkSelected
             // 
-            this.gameLoop.Interval = 16;
-            this.gameLoop.Tick += new System.EventHandler(this.gameLoop_Tick);
+            this.checkSelected.BackColor = System.Drawing.Color.Lime;
+            this.checkSelected.Location = new System.Drawing.Point(321, 378);
+            this.checkSelected.Name = "checkSelected";
+            this.checkSelected.Size = new System.Drawing.Size(235, 68);
+            this.checkSelected.TabIndex = 0;
+            this.checkSelected.Text = "Check for matches!";
+            this.checkSelected.UseVisualStyleBackColor = false;
+            this.checkSelected.Click += new System.EventHandler(this.checkSelected_Click);
             // 
             // GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.checkSelected);
             this.Name = "GameScreen";
             this.Size = new System.Drawing.Size(900, 500);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameScreen_Paint);
@@ -51,6 +57,6 @@
 
         #endregion
 
-        public System.Windows.Forms.Timer gameLoop;
+        private System.Windows.Forms.Button checkSelected;
     }
 }

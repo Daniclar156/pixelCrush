@@ -11,11 +11,14 @@ namespace Pixel_Crush
     {
         public int r, g, b, x, y;
 
+        public bool selected = false;
+
         public Pixel(int _x, int _y)
         {
             r = g = b = 0;
             x = _x;
             y = _y;
+
         }
 
         /// <summary>

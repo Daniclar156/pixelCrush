@@ -22,10 +22,9 @@ namespace Pixel_Crush
         //box list
         public static List<Pixel> pixels = new List<Pixel>();
 
-        //playing grid
-        // public static List<int> pGrid = new List<int>(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
         Random randGen = new Random();
 
+        string lastColor = "nothing";
 
         public GameScreen()
         {
@@ -77,7 +76,7 @@ namespace Pixel_Crush
             Pixel p10 = new Pixel(475, 200);
             pixels.Add(p10);
 
-            Pixel p11 = new Pixel(575, 200);    
+            Pixel p11 = new Pixel(575, 200);
             pixels.Add(p11);
 
             foreach (Pixel pp in pixels)
@@ -89,24 +88,75 @@ namespace Pixel_Crush
 
         private void GameScreen_MouseDown(object sender, MouseEventArgs e)
         {
+            Form f = this.FindForm();
+            int temp = f.Location.X;
             //player turn
             foreach (Pixel p in pixels)
-            {
-                if (p.PixelClicked(p, MousePosition.X, MousePosition.Y))
+            {//make sure a pixel is selected and the same color
+                p.selected = false;
+                if (p.PixelClicked(p, MousePosition.X - f.Location.X, MousePosition.Y - f.Location.Y))
                 {
-                    selectionPen.Width = 3;
+                    
+                    //if last was red
+                    if ((lastColor == "red" && p.r == 255) || lastColor == "nothing")
+                    {
+                        selectionPen.Width = 3;
+                        Graphics g = this.CreateGraphics();
+                        g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);
+                        p.selected = true;
+                    }
 
-                    Graphics g = this.CreateGraphics();
-                    g.DrawRectangle(selectionPen, MousePosition.X - 5, MousePosition.Y - 5, 60, 60);
+                    //if last was green
+                    if (lastColor == "green" && p.g == 255)
+                    {
+                        selectionPen.Width = 3;
+                        Graphics g = this.CreateGraphics();
+                        g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);
+                        p.selected = true;
+                    }
+
+                    //if last was blue
+                    if (lastColor == "blue" && p.b == 255)
+                    {
+                        selectionPen.Width = 3;
+                        Graphics g = this.CreateGraphics();
+                        g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);
+                        p.selected = true;
+                    }
+
+                    if (p.r == 255)
+                    {
+                        lastColor = "red";
+                    }
+                    else if (p.g == 255)
+                    {
+                        lastColor = "green";
+                    }
+                    else
+                    {
+                        lastColor = "blue";
+                    }
+                   
+                }
+            }
+           //Refresh();
+        }
+
+        private void checkSelected_Click(object sender, EventArgs e)
+        {
+            foreach(Pixel p in pixels)
+            {
+                if (p.selected == true)
+                {
+                    if(p.r == 255 && p.g == 0 && p.b == 0)
+                    {
+                        pixels.Remove(p);
+                        Refresh();
+                    }
                 }
             }
         }
 
-        //game loop
-        private void gameLoop_Tick(object sender, EventArgs e)
-        {
-            Refresh();
-        }
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
