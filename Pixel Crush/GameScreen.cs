@@ -14,6 +14,7 @@ namespace Pixel_Crush
     {
         //variables
         int score;
+        int amountOfSelected = 0;
 
         //graphics objects
         SolidBrush pixelBrush;
@@ -21,6 +22,9 @@ namespace Pixel_Crush
 
         //box list
         public static List<Pixel> pixels = new List<Pixel>();
+
+        //boxes to remove list
+        public static List<int> pixelsToRemove = new List<int>();
 
         Random randGen = new Random();
 
@@ -93,22 +97,23 @@ namespace Pixel_Crush
             //player turn
             foreach (Pixel p in pixels)
             {//make sure a pixel is selected and the same color
-                p.selected = false;
                 if (p.PixelClicked(p, MousePosition.X - f.Location.X, MousePosition.Y - f.Location.Y))
                 {
                     
                     //if last was red
-                    if ((lastColor == "red" && p.r == 255) || lastColor == "nothing")
+                    if ((lastColor == "red" && p.r == 255) || lastColor == "nothing")//make sure color selections switch
                     {
+                        amountOfSelected++;//add to amout of selected pixels
                         selectionPen.Width = 3;
                         Graphics g = this.CreateGraphics();
-                        g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);
-                        p.selected = true;
+                        g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);//draw selection border
+                        p.selected = true;//set selected to true
                     }
 
                     //if last was green
                     if (lastColor == "green" && p.g == 255)
                     {
+                        amountOfSelected++;
                         selectionPen.Width = 3;
                         Graphics g = this.CreateGraphics();
                         g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);
@@ -118,6 +123,7 @@ namespace Pixel_Crush
                     //if last was blue
                     if (lastColor == "blue" && p.b == 255)
                     {
+                        amountOfSelected++;
                         selectionPen.Width = 3;
                         Graphics g = this.CreateGraphics();
                         g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);
@@ -135,11 +141,9 @@ namespace Pixel_Crush
                     else
                     {
                         lastColor = "blue";
-                    }
-                   
+                    }                      
                 }
             }
-           //Refresh();
         }
 
         private void checkSelected_Click(object sender, EventArgs e)
@@ -148,13 +152,43 @@ namespace Pixel_Crush
             {
                 if (p.selected == true)
                 {
-                    if(p.r == 255 && p.g == 0 && p.b == 0)
+                    if(p.r == 255 && p.g == 0 && p.b == 0 && amountOfSelected >= 2)
                     {
-                        pixels.Remove(p);
-                        Refresh();
+                        pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
+                        score++;
+                    }
+                }
+
+                if (p.selected == true)
+                {
+                    if (p.r == 0 && p.g == 255 && p.b == 0 && amountOfSelected >= 2)
+                    {
+                        pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
+                        score++;
+                    }
+                }
+                if (p.selected == true)
+                {
+                    if (p.r == 0 && p.g == 0 && p.b == 255 && amountOfSelected >= 2)
+                    {
+                        pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
+                        score++;
                     }
                 }
             }
+
+            pixelsToRemove.Reverse();//reverse removal list
+
+            foreach (int i in pixelsToRemove)
+            {
+                amountOfSelected = 0;//reset amount of selected pixels
+                pixels.RemoveAt(i); //remove pixels
+                scoreLabel.Text = "Score: " + Convert.ToString(score);
+                Refresh();
+            }
+
+            pixelsToRemove.Clear();//clear the list so you don't remove the same pixels again
+
         }
 
 
