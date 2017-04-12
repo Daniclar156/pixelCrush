@@ -11,7 +11,9 @@ namespace Pixel_Crush
     {
         public int r, g, b, x, y;
 
-        public bool selected = false;
+        public bool redSelected = false;
+        public bool greenSelected = false;
+        public bool blueSelected = false;
 
         public Pixel(int _x, int _y)
         {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 
 namespace Pixel_Crush
 {
@@ -15,6 +16,7 @@ namespace Pixel_Crush
         //variables
         int score;
         int amountOfSelected = 0;
+        public static bool playerWon = false;
 
         //graphics objects
         SolidBrush pixelBrush;
@@ -30,9 +32,13 @@ namespace Pixel_Crush
 
         string lastColor = "nothing";
 
+        //sounds
+        SoundPlayer click = new SoundPlayer(Properties.Resources.Click2_Sebastian_759472264);
+
         public GameScreen()
         {
             InitializeComponent();
+
             StartGame();
         }
 
@@ -99,35 +105,38 @@ namespace Pixel_Crush
             {//make sure a pixel is selected and the same color
                 if (p.PixelClicked(p, MousePosition.X - f.Location.X, MousePosition.Y - f.Location.Y))
                 {
-                    
+
                     //if last was red
                     if ((lastColor == "red" && p.r == 255) || lastColor == "nothing")//make sure color selections switch
                     {
+                        click.Play();
                         amountOfSelected++;//add to amout of selected pixels
                         selectionPen.Width = 3;
                         Graphics g = this.CreateGraphics();
                         g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);//draw selection border
-                        p.selected = true;//set selected to true
+                        p.redSelected = true;//set selected to true
                     }
 
                     //if last was green
                     if (lastColor == "green" && p.g == 255)
                     {
+                        click.Play();
                         amountOfSelected++;
                         selectionPen.Width = 3;
                         Graphics g = this.CreateGraphics();
                         g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);
-                        p.selected = true;
+                        p.greenSelected = true;
                     }
 
                     //if last was blue
                     if (lastColor == "blue" && p.b == 255)
                     {
+                        click.Play();
                         amountOfSelected++;
                         selectionPen.Width = 3;
                         Graphics g = this.CreateGraphics();
                         g.DrawRectangle(selectionPen, p.x - 5, p.y - 5, 60, 60);
-                        p.selected = true;
+                        p.blueSelected = true;
                     }
 
                     if (p.r == 255)
@@ -141,40 +150,43 @@ namespace Pixel_Crush
                     else
                     {
                         lastColor = "blue";
-                    }                      
+                    }
                 }
             }
         }
 
         private void checkSelected_Click(object sender, EventArgs e)
         {
-            foreach(Pixel p in pixels)
+            foreach (Pixel p in pixels)
             {
-                if (p.selected == true)
+                if (p.redSelected == true && amountOfSelected >= 2 && p.greenSelected == false && p.blueSelected == false)//todo figure out how to not delete unless same color
                 {
-                    if(p.r == 255 && p.g == 0 && p.b == 0 && amountOfSelected >= 2)
-                    {
-                        pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
-                        score++;
-                    }
+                    pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
+                    score++;
+                }
+                else
+                {
+                    Refresh();
+                }
+                if (p.greenSelected == true && amountOfSelected >= 2 && p.redSelected == false && p.blueSelected == false)
+                {
+                    pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
+                    score++;
+                }
+                else
+                {
+                    Refresh();
+                }
+                if (p.blueSelected == true && amountOfSelected >= 2 && p.redSelected == false && p.greenSelected == false)
+                {
+                    pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
+                    score++;
+                }
+                else
+                {
+                    Refresh();
                 }
 
-                if (p.selected == true)
-                {
-                    if (p.r == 0 && p.g == 255 && p.b == 0 && amountOfSelected >= 2)
-                    {
-                        pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
-                        score++;
-                    }
-                }
-                if (p.selected == true)
-                {
-                    if (p.r == 0 && p.g == 0 && p.b == 255 && amountOfSelected >= 2)
-                    {
-                        pixelsToRemove.Add(pixels.IndexOf(p));//add pixels to removal list
-                        score++;
-                    }
-                }
             }
 
             pixelsToRemove.Reverse();//reverse removal list
@@ -189,8 +201,30 @@ namespace Pixel_Crush
 
             pixelsToRemove.Clear();//clear the list so you don't remove the same pixels again
 
+            if (pixels.Count == 0)//if the screen has been cleared or if the puzzle is impossible
+            {
+                playerWon = true;
+                generateGrid();//remake grid
+                score = 0;
+                scoreLabel.Text = "Score: " + Convert.ToString(score);
+                gameOverScreen gos = new gameOverScreen();
+                Form f = this.FindForm();
+                f.Controls.Add(gos);
+                f.Controls.Remove(this);
+            }
+            else if (pixels.Count == 1)
+            {
+                playerWon = false;
+                generateGrid();//remake grid
+                score = 0;
+                scoreLabel.Text = "Score: " + Convert.ToString(score);
+                MessageBox.Show("No more matches possible");
+                gameOverScreen gos = new gameOverScreen();
+                Form f = this.FindForm();
+                f.Controls.Add(gos);
+                f.Controls.Remove(this);
+            }
         }
-
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
